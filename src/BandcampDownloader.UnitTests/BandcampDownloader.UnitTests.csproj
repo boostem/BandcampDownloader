@@ -5,6 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <!-- Suppress OS-platform assembly attributes so tests run in WSL (NUnit 4 refuses Windows-only assemblies on Linux) -->
+    <GenerateSupportedOSPlatformAttribute>false</GenerateSupportedOSPlatformAttribute>
+    <GenerateTargetPlatformAttribute>false</GenerateTargetPlatformAttribute>
+    <!-- CA1416: calling Windows-only APIs is intentional in this test project -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,10 +29,18 @@
     <ProjectReference Include="..\BandcampDownloader\BandcampDownloader.csproj" />
   </ItemGroup>
 
+
   <ItemGroup>
     <None Update="Resources\Files\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <!-- Strip the WPF/WinForms runtime requirement so tests run in WSL (no Microsoft.WindowsDesktop.App installed) -->
+  <Target Name="RemoveWindowsDesktopRuntimeFramework" AfterTargets="ResolveFrameworkReferences">
+    <ItemGroup>
+      <RuntimeFramework Remove="@(RuntimeFramework)" Condition="'%(Identity)' == 'Microsoft.WindowsDesktop.App'" />
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -31,7 +31,7 @@ internal sealed class AlbumUrlRetriever : IAlbumUrlRetriever
 
     public async Task<IReadOnlyCollection<string>> RetrieveAlbumsUrlsAsync(string inputUrls, bool downloadArtistDiscography, CancellationToken cancellationToken)
     {
-        var splitUrls = inputUrls.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries).ToList();
+        var splitUrls = inputUrls.Split(["\r\n", "\r", "\n"], StringSplitOptions.RemoveEmptyEntries).ToList();
         var sanitizedUrls = splitUrls.Distinct().Select(o => o.Trim()).ToList();
 
         if (!downloadArtistDiscography)
